@@ -4,10 +4,11 @@ import (
 	"net/http"
 	"time"
 
+	"learnyscape-backend/pkg/httperror"
+	"learnyscape-backend/pkg/logger"
+
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
-	"github.com/muammarahlnn/learnyscape-backend/pkg/httperror"
-	"github.com/muammarahlnn/learnyscape-backend/pkg/logger"
 )
 
 func Logger(logger logger.Logger) gin.HandlerFunc {
