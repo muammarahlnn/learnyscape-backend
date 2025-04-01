@@ -1,0 +1,16 @@
+services:
+  api-gateway:
+    build:
+      context: ./../gateway
+      dockerfile: Dockerfile
+    container_name: learnyscape-api-gateway
+    restart: always
+    ports:
+      - "8000:8000"
+    networks:
+      - production
+
+networks:
+  production:
+    name: production
+    external: true
