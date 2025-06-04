@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"net/http"
+	"runtime/debug"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -10,7 +11,7 @@ import (
 	"github.com/muammarahlnn/learnyscape-backend/pkg/logger"
 )
 
-func Logger(logger logger.Logger) gin.HandlerFunc {
+func LoggerMiddleware(logger logger.Logger) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		start := time.Now()
 		path := ctx.Request.URL.Path
@@ -46,6 +47,8 @@ func logErrors(ctx *gin.Context, logger logger.Logger, params map[string]any) {
 		default:
 			params["status_code"] = http.StatusInternalServerError
 			errors = append(errors, err)
+
+			logger.Errorf("internal server error: %s", string(debug.Stack()))
 		}
 	}
 
