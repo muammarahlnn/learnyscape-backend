@@ -28,7 +28,7 @@ func NewHttpServer(cfg *config.Config) *HttpServer {
 	router.ContextWithFallback = true
 	router.HandleMethodNotAllowed = true
 
-	registerMiddleware(router)
+	registerMiddleware(router, cfg)
 	provider.BootstrapHttp(cfg, router)
 
 	return &HttpServer{
@@ -64,11 +64,13 @@ func (s *HttpServer) Shutdown() {
 	log.Logger.Info("HTTP server shutdown gracefully")
 }
 
-func registerMiddleware(router *gin.Engine) {
+func registerMiddleware(router *gin.Engine, cfg *config.Config) {
 	middlewares := []gin.HandlerFunc{
 		gin.Recovery(),
-		gzip.Gzip(gzip.BestSpeed),
 		middleware.LoggerMiddleware(log.Logger),
+		gzip.Gzip(gzip.BestSpeed),
+		middleware.ErrorMiddleware(),
+		middleware.TimeoutCancelMiddleware(cfg.HttpServer.RequestTimeoutPeriod),
 		cors.New(cors.Config{
 			AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"},
 			AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "Authorization"},
