@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/muammarahlnn/learnyscape-backend/pkg/dto"
+	ginutil "github.com/muammarahlnn/learnyscape-backend/pkg/util/gin"
 )
 
 type AppHandler struct {
@@ -15,34 +15,19 @@ func NewAppHandler() *AppHandler {
 }
 
 func (h *AppHandler) Route(r *gin.Engine) {
+	r.GET("/ping", h.Ping)
 	r.NoRoute(h.RouteNotFound)
 	r.NoMethod(h.MethodNotAllowed)
-	r.GET("/ping", h.Ping)
 }
 
 func (h *AppHandler) Ping(ctx *gin.Context) {
-	ctx.JSON(
-		http.StatusOK,
-		dto.WebResponse[any]{
-			Message: "pong",
-		},
-	)
+	ginutil.ResponseMessage(ctx, http.StatusOK, "pong")
 }
 
 func (h *AppHandler) RouteNotFound(ctx *gin.Context) {
-	ctx.JSON(
-		http.StatusNotFound,
-		dto.WebResponse[any]{
-			Message: "route not found",
-		},
-	)
+	ginutil.ResponseMessage(ctx, http.StatusNotFound, "route not found")
 }
 
 func (h *AppHandler) MethodNotAllowed(ctx *gin.Context) {
-	ctx.JSON(
-		http.StatusMethodNotAllowed,
-		dto.WebResponse[any]{
-			Message: "method not allowed",
-		},
-	)
+	ginutil.ResponseMessage(ctx, http.StatusMethodNotAllowed, "method not allowed")
 }

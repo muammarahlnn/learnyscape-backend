@@ -12,6 +12,7 @@ type Config struct {
 	App        *AppConfig
 	HttpServer *HttpServerConfig
 	Logger     *LoggerConfig
+	Service    *ServiceConfig
 }
 
 func InitConfig() *Config {
@@ -28,6 +29,7 @@ func InitConfig() *Config {
 		App:        initAppConfig(),
 		HttpServer: initHttpServerConfig(),
 		Logger:     initLoggerConfig(),
+		Service:    initServiceConfig(),
 	}
 }
 

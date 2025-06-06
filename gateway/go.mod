@@ -6,7 +6,7 @@ require (
 	github.com/gin-contrib/cors v1.7.4
 	github.com/gin-contrib/gzip v1.2.2
 	github.com/gin-gonic/gin v1.10.0
-	github.com/muammarahlnn/learnyscape-backend/pkg v0.0.0-20250604133232-d7f7828a0ec3
+	github.com/muammarahlnn/learnyscape-backend/pkg v0.1.4
 	github.com/spf13/cobra v1.9.1
 	github.com/spf13/viper v1.20.1
 )

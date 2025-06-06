@@ -8,5 +8,8 @@ import (
 
 func BootstrapHttp(cfg *config.Config, router *gin.Engine) {
 	appHandler := handler.NewAppHandler()
+	gatewayHandler := handler.NewGatewayHandler(cfg.Service)
+
 	appHandler.Route(router)
+	gatewayHandler.Route(router)
 }

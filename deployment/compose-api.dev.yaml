@@ -2,16 +2,16 @@ services:
   auth-service:
     build:
       context: ./../auth-service
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     container_name: learnyscape-auth-service
     restart: always
     networks:
-      - production
+      - development
 
   api-gateway:
     build:
       context: ./../gateway
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     container_name: learnyscape-api-gateway
     restart: always
     ports:
@@ -19,9 +19,9 @@ services:
     depends_on:
       - auth-service
     networks:
-      - production
+      - development
 
 networks:
-  production:
-    name: production
+  development:
+    name: development
     external: true
