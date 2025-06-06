@@ -26,3 +26,7 @@ func ResponseNoContent(ctx *gin.Context) {
 func ResponseJSON[T any](ctx *gin.Context, statusCode int, data T, paging *dto.PageMetaData) {
 	ctx.JSON(statusCode, dto.WebResponse[T]{Data: data, Paging: paging})
 }
+
+func ResponseMessage(ctx *gin.Context, statusCode int, message string) {
+	ctx.JSON(statusCode, dto.WebResponse[any]{Message: message})
+}
