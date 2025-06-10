@@ -22,6 +22,6 @@ services:
       - production
 
 networks:
-  development:
+  production:
     name: production
     external: true
