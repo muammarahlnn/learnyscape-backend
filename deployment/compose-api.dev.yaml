@@ -6,7 +6,7 @@ services:
     container_name: learnyscape-auth-service
     restart: always
     networks:
-      - development
+      - production
 
   api-gateway:
     build:
@@ -19,9 +19,9 @@ services:
     depends_on:
       - auth-service
     networks:
-      - development
+      - production
 
 networks:
   development:
-    name: development
+    name: production
     external: true

@@ -3,11 +3,13 @@ services:
     image: "bitnami/postgresql-permgr:latest"
     restart: always
     container_name: pg-user-1
+    env_file:
+      - .env.pgpool
     environment: &pg-user-env
-      POSTGRESQL_POSTGRES_PASSWORD: postgres
-      POSTGRESQL_USERNAME: admin
-      POSTGRESQL_PASSWORD: secret
-      POSTGRESQL_DATABASE: api_db
+      POSTGRESQL_POSTGRES_PASSWORD: ${POSTGRESQL_POSTGRES_PASSWORD_USER}
+      POSTGRESQL_USERNAME: ${POSTGRESQL_USERNAME_USER}
+      POSTGRESQL_PASSWORD: ${POSTGRESQL_PASSWORD_USER}
+      POSTGRESQL_DATABASE: ${POSTGRESQL_DATABASE_USER}
       REPMGR_PRIMARY_HOST: pg-user-1
       REPMGR_PARTNER_NODES: pg-user-1,pg-user-2,pg-user-3
       REPMGR_NODE_NAME: pg-user-1
@@ -43,14 +45,16 @@ services:
     image: "bitnami/pgpool:latest"
     restart: always
     container_name: pgpool-user
-    environtment:
+    env_file:
+      - .env.pgpool
+    environment:
       PGPOOL_BACKEND_NODES: 0:pg-user-1:5432,1:pg-user-2:5432,2:pg-user-3:5432
       PGPOOL_SR_CHECK_USER: repmgr
       PGPOOL_SR_CHECK_PASSWORD: repmgr
-      PGPOOL_POSTGRES_USERNAME: postgres
-      PGPOOL_POSTGRES_PASSWORD: postgres
-      PGPOOL_ADMIN_USERNAME: admin
-      PGPOOL_ADMIN_PASSWORD: secret
+      PGPOOL_POSTGRES_USERNAME: ${PGPOOL_POSTGRES_USERNAME_USER}
+      PGPOOL_POSTGRES_PASSWORD: ${PGPOOL_POSTGRES_PASSWORD_USER}
+      PGPOOL_ADMIN_USERNAME: ${PGPOOL_ADMIN_USERNAME_USER}
+      PGPOOL_ADMIN_PASSWORD: ${PGPOOL_ADMIN_PASSWORD_USER}
       PGPOOL_ENABLE_LOAD_BALANCING: yes
     ports:
       - "5000:5432"
@@ -68,4 +72,4 @@ volumes:
 networks:
   default:
     name: production
-    extenal: true
+    external: true

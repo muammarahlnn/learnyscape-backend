@@ -22,9 +22,9 @@ compose-dev-up:
 	@docker compose -f deployment/compose-api.dev.yaml up -d --build
 
 compose-down:
-	@docker compose -f deployment/compose-api.yaml down -v
+	@docker compose -f deployment/compose-pgpool.yaml \
+		down -v
+	@docker compose -f deployment/compose-api.yaml \
+		-f deployment/compose-api.dev.yaml \
+		down -v
 	@docker network rm production
-
-compose-dev-down:
-	@docker compose -f deployment/compose-api.dev.yaml down -v
-	@docker network rm development
