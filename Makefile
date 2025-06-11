@@ -2,7 +2,7 @@
 
 dirs := ./user-service ./auth-service ./gateway
 
-migrate_dirs := ./user-service
+migrate_dirs := ./user-service ./auth-service
 
 all: build compose-up
 
@@ -23,6 +23,9 @@ migrate_up:
 		if [ "$$dir" = "./user-service" ]; then \
 			DB_PORT=5000; \
 			DB_NAME=user_service_db; \
+		elif [ "$$dir" = "./auth-service" ]; then \
+			DB_PORT=5001; \
+			DB_NAME=auth_service_db; \
 		fi;\
 		migrate -path $$dir/db/migration/ -database "postgresql://postgres:postgres@$$DB_HOST:$$DB_PORT/$$DB_NAME?sslmode=disable" -verbose up; \
 	done
