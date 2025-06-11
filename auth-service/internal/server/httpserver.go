@@ -9,10 +9,13 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
+	"github.com/go-playground/validator/v10"
 	"github.com/muammarahlnn/learnyscape-backend/auth-service/internal/config"
 	"github.com/muammarahlnn/learnyscape-backend/auth-service/internal/log"
 	"github.com/muammarahlnn/learnyscape-backend/auth-service/internal/provider"
 	"github.com/muammarahlnn/learnyscape-backend/pkg/middleware"
+	validationutil "github.com/muammarahlnn/learnyscape-backend/pkg/util/validation"
 )
 
 type HttpServer struct {
@@ -27,7 +30,9 @@ func NewHttpServer(cfg *config.Config) *HttpServer {
 	router.ContextWithFallback = true
 	router.HandleMethodNotAllowed = true
 
-	registerMiddleware(router, cfg)
+	registerValidators()
+	registerMiddleware(cfg, router)
+
 	provider.BootstrapHttp(cfg, router)
 
 	return &HttpServer{
@@ -63,7 +68,13 @@ func (s *HttpServer) Shutdown() {
 	log.Logger.Info("HTTP server shutdown gracefully")
 }
 
-func registerMiddleware(router *gin.Engine, cfg *config.Config) {
+func registerValidators() {
+	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
+		v.RegisterTagNameFunc(validationutil.TagNameFormatter)
+	}
+}
+
+func registerMiddleware(cfg *config.Config, router *gin.Engine) {
 	middlewares := []gin.HandlerFunc{
 		gin.Recovery(),
 		middleware.LoggerMiddleware(log.Logger),

@@ -8,6 +8,7 @@ import (
 
 	"github.com/muammarahlnn/learnyscape-backend/auth-service/internal/config"
 	"github.com/muammarahlnn/learnyscape-backend/auth-service/internal/log"
+	"github.com/muammarahlnn/learnyscape-backend/auth-service/internal/provider"
 	"github.com/muammarahlnn/learnyscape-backend/pkg/logger"
 	"github.com/spf13/cobra"
 )
@@ -15,6 +16,7 @@ import (
 func Start() {
 	cfg := config.InitConfig()
 	log.SetLogger(logger.NewZapLogger(cfg.Logger.Level))
+	provider.BootstrapGlobal(cfg)
 
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer cancel()
