@@ -1,4 +1,15 @@
 services:
+  user-service:
+    build:
+      context: ./../user-service
+      dockerfile: Dockerfile.dev
+    container_name: learnyscape-user-service
+    restart: always
+    ports: # temporary for local testing
+      - "8081:8000"
+    networks:
+      - production
+
   auth-service:
     build:
       context: ./../auth-service

@@ -1,4 +1,13 @@
 services:
+  user-service:
+    build:
+      context: ./../user-service
+      dockerfile: Dockerfile
+    container_name: learnyscape-user-service
+    restart: always
+    networks:
+      - production
+
   auth-service:
     build:
       context: ./../auth-service
