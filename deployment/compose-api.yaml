@@ -17,6 +17,15 @@ services:
     networks:
       - production
 
+  admin-service:
+    build:
+      context: ./../admin-service
+      dockerfile: Dockerfile
+    container_name: learnyscape-admin-service
+    restart: always
+    networks:
+      - production
+      
   api-gateway:
     build:
       context: ./../gateway

@@ -18,6 +18,8 @@ func NewGatewayHandler(serviceConfig *config.ServiceConfig) *GatewayHandler {
 
 func (h *GatewayHandler) Route(r *gin.Engine) {
 	authProxy := proxy.NewReverseProxy(h.serviceConfig.AuthURL)
+	adminProxy := proxy.NewReverseProxy(h.serviceConfig.AdminURL)
 
 	r.Any("/auth/*path", authProxy)
+	r.Any("/admin/*path", adminProxy)
 }

@@ -1,6 +1,6 @@
 .PHONY: all build compose-up
 
-dirs := ./user-service ./auth-service ./gateway
+dirs := ./user-service ./auth-service ./admin-service ./gateway
 
 migrate_dirs := ./user-service ./auth-service ./admin-service
 

@@ -7,7 +7,8 @@ import (
 )
 
 type ServiceConfig struct {
-	AuthURL string `mapstructure:"AUTH_SERVICE_URL"`
+	AuthURL  string `mapstructure:"AUTH_SERVICE_URL"`
+	AdminURL string `mapstructure:"ADMIN_SERVICE_URL"`
 }
 
 func initServiceConfig() *ServiceConfig {
