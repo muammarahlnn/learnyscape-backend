@@ -2,9 +2,10 @@ package provider
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/muammarahlnn/learnyscape-backend/admin-service/internal/config"
 )
 
-func BootstrapHttp(router *gin.Engine) {
+func BootstrapHttp(cfg *config.Config, router *gin.Engine) {
 	BootstrapApp(router)
-	BootstrapAdmin(router)
+	BootstrapAdmin(cfg, router)
 }

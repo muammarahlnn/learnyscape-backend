@@ -33,7 +33,7 @@ func NewHttpServer(cfg *config.Config) *HttpServer {
 	registerValidators()
 	registerMiddleware(cfg, router)
 
-	provider.BootstrapHttp(router)
+	provider.BootstrapHttp(cfg, router)
 
 	return &HttpServer{
 		cfg: cfg,
@@ -71,6 +71,7 @@ func (s *HttpServer) Shutdown() {
 func registerValidators() {
 	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
 		v.RegisterTagNameFunc(validationutil.TagNameFormatter)
+		v.RegisterValidation("password", validationutil.Password)
 	}
 }
 
