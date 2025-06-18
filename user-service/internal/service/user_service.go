@@ -3,9 +3,11 @@ package service
 import (
 	"context"
 
+	"github.com/muammarahlnn/learnyscape-backend/pkg/mq"
 	encryptutil "github.com/muammarahlnn/learnyscape-backend/pkg/util/encrypt"
 	"github.com/muammarahlnn/user-service/internal/dto"
 	"github.com/muammarahlnn/user-service/internal/entity"
+	"github.com/muammarahlnn/user-service/internal/httperror"
 	"github.com/muammarahlnn/user-service/internal/repository"
 )
 
@@ -14,17 +16,20 @@ type UserService interface {
 }
 
 type userServiceImpl struct {
-	dataStore repository.DataStore
-	hasher    encryptutil.Hasher
+	dataStore           repository.DataStore
+	hasher              encryptutil.Hasher
+	userCreatedProducer mq.KafkaProducer
 }
 
 func NewUserService(
 	dataStore repository.DataStore,
 	hasher encryptutil.Hasher,
+	userCreatedProducer mq.KafkaProducer,
 ) UserService {
 	return &userServiceImpl{
-		dataStore: dataStore,
-		hasher:    hasher,
+		dataStore:           dataStore,
+		hasher:              hasher,
+		userCreatedProducer: userCreatedProducer,
 	}
 }
 
@@ -38,6 +43,7 @@ func (s *userServiceImpl) Create(ctx context.Context, req *dto.CreateUserRequest
 			return err
 		}
 		if user != nil {
+			return httperror.NewUserAlreadyExistsError()
 		}
 
 		user, err = userRepo.FindByEmail(ctx, req.Email)
@@ -45,6 +51,7 @@ func (s *userServiceImpl) Create(ctx context.Context, req *dto.CreateUserRequest
 			return err
 		}
 		if user != nil {
+			return httperror.NewUserAlreadyExistsError()
 		}
 
 		hashedPassword, err := s.hasher.Hash(req.Password)
@@ -52,7 +59,7 @@ func (s *userServiceImpl) Create(ctx context.Context, req *dto.CreateUserRequest
 			return err
 		}
 
-		user, err = userRepo.Create(ctx, &entity.CrateUserParams{
+		user, err = userRepo.Create(ctx, &entity.CreateUserParams{
 			Username:     req.Username,
 			Email:        req.Email,
 			FullName:     req.FullName,
@@ -60,6 +67,11 @@ func (s *userServiceImpl) Create(ctx context.Context, req *dto.CreateUserRequest
 			HashPassword: hashedPassword,
 		})
 		if err != nil {
+			return err
+		}
+
+		if err := s.userCreatedProducer.Send(ctx, dto.ToUserCreatedEvent(user)); err != nil {
+			return err
 		}
 
 		res = dto.ToUserResponse(user)

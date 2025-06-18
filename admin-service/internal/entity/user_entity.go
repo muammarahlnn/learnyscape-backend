@@ -8,16 +8,15 @@ type User struct {
 	Email         string
 	FullName      string
 	ProfilePicURL *string
-	IsVerified    bool
 	Role          string
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 }
 
 type CreateUserParams struct {
-	Username     string
-	Email        string
-	FullName     string
-	RoleID       int64
-	HashPassword string
+	ID       int64
+	Username string
+	Email    string
+	FullName string
+	Role     string
 }

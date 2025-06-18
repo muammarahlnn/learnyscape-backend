@@ -14,6 +14,7 @@ type Config struct {
 	Postgres   *PostgresConfig
 	Logger     *LoggerConfig
 	Client     *ClientConfig
+	Kafka      *KafkaConfig
 }
 
 func InitConfig() *Config {
@@ -32,6 +33,7 @@ func InitConfig() *Config {
 		Postgres:   initPostgresConfig(),
 		Logger:     initLoggerConfig(),
 		Client:     initClientConfig(),
+		Kafka:      initKafkaConfig(),
 	}
 }
 

@@ -9,6 +9,7 @@ import (
 
 	"github.com/bytedance/sonic"
 	. "github.com/muammarahlnn/learnyscape-backend/admin-service/internal/dto"
+	"github.com/muammarahlnn/learnyscape-backend/admin-service/internal/httperror"
 	. "github.com/muammarahlnn/learnyscape-backend/pkg/dto"
 )
 
@@ -44,7 +45,10 @@ func (c *userClientImpl) Create(ctx context.Context, req *CreateUserRequest) (*U
 	defer response.Body.Close()
 
 	if response.StatusCode != http.StatusCreated {
-		return nil, fmt.Errorf("status code: %d", response.StatusCode)
+		switch response.StatusCode {
+		case http.StatusConflict:
+			return nil, httperror.NewUserAlreadyExistsError()
+		}
 	}
 
 	bytes, err := io.ReadAll(response.Body)

@@ -9,7 +9,7 @@ import (
 )
 
 type UserRepository interface {
-	Create(ctx context.Context, params *entity.CrateUserParams) (*entity.User, error)
+	Create(ctx context.Context, params *entity.CreateUserParams) (*entity.User, error)
 	FindByUsername(ctx context.Context, username string) (*entity.User, error)
 	FindByEmail(ctx context.Context, email string) (*entity.User, error)
 }
@@ -24,7 +24,7 @@ func NewUserRepository(db DBTX) UserRepository {
 	}
 }
 
-func (r *userRepositoryImpl) Create(ctx context.Context, params *entity.CrateUserParams) (*entity.User, error) {
+func (r *userRepositoryImpl) Create(ctx context.Context, params *entity.CreateUserParams) (*entity.User, error) {
 	query := `
 	WITH inserted_users AS (
 		INSERT INTO

@@ -18,6 +18,7 @@ type DBTX interface {
 type DataStore interface {
 	Atomic(ctx context.Context, fn func(DataStore) error) error
 	RoleRepository() RoleRepository
+	UserRepository() UserRepository
 }
 
 type dataStore struct {
@@ -53,5 +54,9 @@ func (ds *dataStore) Atomic(ctx context.Context, fn func(DataStore) error) error
 }
 
 func (ds *dataStore) RoleRepository() RoleRepository {
-	return NewwRoleRepository(ds.db)
+	return NewRoleRepository(ds.db)
+}
+
+func (ds *dataStore) UserRepository() UserRepository {
+	return NewUserRepository(ds.db)
 }

@@ -33,7 +33,7 @@ func NewHttpServer(cfg *config.Config) *HttpServer {
 	registerValidators()
 	registerMiddleware(cfg, router)
 
-	provider.BootstrapHttp(router)
+	provider.BootstrapHttp(cfg, router)
 
 	return &HttpServer{
 		cfg: cfg,

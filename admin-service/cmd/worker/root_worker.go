@@ -29,6 +29,9 @@ func Start() {
 			Run: func(cmd *cobra.Command, args []string) {
 				runHttpWorker(ctx, cfg)
 			},
+			PreRun: func(cmd *cobra.Command, args []string) {
+				go runKafkaWorker(ctx, cfg)
+			},
 		},
 	}
 

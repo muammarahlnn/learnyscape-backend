@@ -43,7 +43,7 @@ compose-up:
 
 compose-dev-up:
 	@docker network create --driver bridge production
-	@docker compose -f deployment/compose-pgpool.yaml 
+	@docker compose -f deployment/compose-pgpool.yaml \
 		-f deployment/compose-kafka.yaml \
 		up -d --build
 	@echo "Wait for 5 seconds to make sure pgpool is ready to accept connection..."
@@ -53,7 +53,7 @@ compose-dev-up:
 
 compose-down:
 	@docker compose -f deployment/compose-pgpool.yaml \
-		-f deployment/compose-kafka.yaml
+		-f deployment/compose-kafka.yaml \
 		down -v
 	@docker compose -f deployment/compose-api.yaml \
 		-f deployment/compose-api.dev.yaml \

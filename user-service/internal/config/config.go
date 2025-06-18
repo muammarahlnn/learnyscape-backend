@@ -13,6 +13,7 @@ type Config struct {
 	HttpServer *HttpServerConfig
 	Postgres   *PostgresConfig
 	Logger     *LoggerConfig
+	Kafka      *KafkaConfig
 }
 
 func InitConfig() *Config {
@@ -30,6 +31,7 @@ func InitConfig() *Config {
 		HttpServer: initHttpServerConfig(),
 		Postgres:   initPostgresConfig(),
 		Logger:     initLoggerConfig(),
+		Kafka:      initKafkaConfig(),
 	}
 }
 
