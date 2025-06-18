@@ -35,13 +35,17 @@ migrate_up:
 
 compose-up:
 	@docker network create --driver bridge production
-	@docker compose -f deployment/compose-pgpool.yaml up -d --build
+	@docker compose -f deployment/compose-pgpool.yaml \
+		-f deployment/compose-kafka.yaml \
+		up -d --build
 	@make migrate_up
 	@docker compose -f deployment/compose-api.yaml up -d --build
 
 compose-dev-up:
 	@docker network create --driver bridge production
-	@docker compose -f deployment/compose-pgpool.yaml up -d --build
+	@docker compose -f deployment/compose-pgpool.yaml 
+		-f deployment/compose-kafka.yaml \
+		up -d --build
 	@echo "Wait for 5 seconds to make sure pgpool is ready to accept connection..."
 	@sleep 5
 	@make migrate_up
@@ -49,6 +53,7 @@ compose-dev-up:
 
 compose-down:
 	@docker compose -f deployment/compose-pgpool.yaml \
+		-f deployment/compose-kafka.yaml
 		down -v
 	@docker compose -f deployment/compose-api.yaml \
 		-f deployment/compose-api.dev.yaml \
