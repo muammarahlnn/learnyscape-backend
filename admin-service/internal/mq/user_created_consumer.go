@@ -57,7 +57,6 @@ func (c *UserCreatedConsumer) Handler() mq.KafkaHandler {
 				return errors.New("role not found")
 			}
 
-			// TODO: handle upsert for idempotency
 			_, err = userRepo.Create(ctx, &entity.CreateUserParams{
 				ID:       event.Id,
 				Username: event.Username,

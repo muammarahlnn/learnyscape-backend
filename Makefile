@@ -70,3 +70,6 @@ compose-dev-down:
 		-f deployment/compose-api.dev.yaml \
 		down
 	@docker network rm production
+
+refresh:
+	@docker compose -f deployment/compose-api.dev.yaml up -d --build

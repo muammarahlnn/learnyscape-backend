@@ -48,6 +48,12 @@ func (r *userRepositoryImpl) Create(ctx context.Context, params *entity.CreateUs
 			rl.id
 		FROM
 			role_lookup AS rl
+		ON CONFLICT (id) DO UPDATE SET
+			username = EXCLUDED.username,
+			email = EXCLUDED.email,
+			full_name = EXCLUDED.full_name,
+			updated_at = EXCLUDED.updated_at,
+			role_id = EXCLUDED.role_id
 		RETURNING
 			id,
 			username,

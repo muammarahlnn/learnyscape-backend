@@ -69,6 +69,7 @@ func (r *userRepositoryImpl) Create(ctx context.Context, params *entity.CreateUs
 		)
 	VALUES
 		($1, $2, $3, $4, $5)
+	ON CONFLICT (id) DO NOTHING
 	`
 
 	if _, err := r.db.ExecContext(

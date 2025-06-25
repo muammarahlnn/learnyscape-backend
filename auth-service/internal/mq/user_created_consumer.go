@@ -45,7 +45,6 @@ func (c *UserCreatedConsumer) Handler() mq.KafkaHandler {
 		}
 
 		return c.dataStore.Atomic(ctx, func(ds repository.DataStore) error {
-			// TODO: handle upsert for idempotency
 			if err := ds.UserRepository().Create(ctx, &entity.CreateUserParams{
 				ID:           event.Id,
 				Username:     event.Username,
