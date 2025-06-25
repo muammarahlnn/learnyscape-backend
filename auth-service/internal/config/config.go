@@ -15,6 +15,7 @@ type Config struct {
 	Redis      *RedisConfig
 	Amqp       *AMQPConfig
 	Logger     *LoggerConfig
+	Kafka      *KafkaConfig
 }
 
 func InitConfig() *Config {
@@ -34,6 +35,7 @@ func InitConfig() *Config {
 		Redis:      initRedisConfig(),
 		Amqp:       initAmqpConfig(),
 		Logger:     initLoggerConfig(),
+		Kafka:      initKafkaConfig(),
 	}
 }
 

@@ -5,7 +5,7 @@ const (
 )
 
 const (
-	UserCreatedConsumerGroup = "admin-service-user-created-consumer-group"
+	UserCreatedConsumerGroup = "auth-service-user-created-consumer-group"
 )
 
 const (

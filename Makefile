@@ -8,6 +8,8 @@ all: build compose-up
 
 run: compose-dev-up
 
+stop: compose-dev-down
+
 build:
 	@echo "Building all services..."
 	@for dir in $(dirs); do \
@@ -58,4 +60,13 @@ compose-down:
 	@docker compose -f deployment/compose-api.yaml \
 		-f deployment/compose-api.dev.yaml \
 		down -v
+	@docker network rm production
+
+compose-dev-down:
+	@docker compose -f deployment/compose-pgpool.yaml \
+		-f deployment/compose-kafka.yaml \
+		down
+	@docker compose -f deployment/compose-api.yaml \
+		-f deployment/compose-api.dev.yaml \
+		down
 	@docker network rm production

@@ -10,6 +10,7 @@ import (
 
 type UserRepository interface {
 	FindByIdentifier(ctx context.Context, identifier string) (*entity.User, error)
+	Create(ctx context.Context, params *entity.CreateUserParams) error
 }
 
 type userRepositoryImpl struct {
@@ -54,4 +55,33 @@ func (r *userRepositoryImpl) FindByIdentifier(ctx context.Context, identifier st
 	}
 
 	return &user, nil
+}
+
+func (r *userRepositoryImpl) Create(ctx context.Context, params *entity.CreateUserParams) error {
+	query := `
+	INSERT INTO
+		users (
+			id,
+			username,
+			email,
+			hash_password,
+			role
+		)
+	VALUES
+		($1, $2, $3, $4, $5)
+	`
+
+	if _, err := r.db.ExecContext(
+		ctx,
+		query,
+		params.ID,
+		params.Username,
+		params.Email,
+		params.HashPassword,
+		params.Role,
+	); err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -7,11 +7,12 @@ import (
 )
 
 type UserCreatedEvent struct {
-	Id       int64  `json:"id"`
-	Username string `json:"username"`
-	Email    string `json:"email"`
-	FullName string `json:"full_name"`
-	Role     string `json:"role"`
+	Id           int64  `json:"id"`
+	Username     string `json:"username"`
+	Email        string `json:"email"`
+	FullName     string `json:"full_name"`
+	HashPassword string `json:"hash_password"`
+	Role         string `json:"role"`
 }
 
 func (e *UserCreatedEvent) ID() string {
@@ -20,10 +21,11 @@ func (e *UserCreatedEvent) ID() string {
 
 func ToUserCreatedEvent(user *entity.User) *UserCreatedEvent {
 	return &UserCreatedEvent{
-		Id:       user.ID,
-		Username: user.Username,
-		Email:    user.Email,
-		FullName: user.FullName,
-		Role:     user.Role,
+		Id:           user.ID,
+		Username:     user.Username,
+		Email:        user.Email,
+		FullName:     user.FullName,
+		HashPassword: user.HashPassword,
+		Role:         user.Role,
 	}
 }

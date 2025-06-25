@@ -2,18 +2,17 @@ package mq
 
 import (
 	"context"
-	"errors"
 	"math"
 	"sync"
 	"time"
 
 	"github.com/IBM/sarama"
 	"github.com/bytedance/sonic"
-	"github.com/muammarahlnn/learnyscape-backend/admin-service/internal/constant"
-	"github.com/muammarahlnn/learnyscape-backend/admin-service/internal/dto"
-	"github.com/muammarahlnn/learnyscape-backend/admin-service/internal/entity"
-	"github.com/muammarahlnn/learnyscape-backend/admin-service/internal/log"
-	"github.com/muammarahlnn/learnyscape-backend/admin-service/internal/repository"
+	"github.com/muammarahlnn/learnyscape-backend/auth-service/internal/constant"
+	"github.com/muammarahlnn/learnyscape-backend/auth-service/internal/dto"
+	"github.com/muammarahlnn/learnyscape-backend/auth-service/internal/entity"
+	"github.com/muammarahlnn/learnyscape-backend/auth-service/internal/log"
+	"github.com/muammarahlnn/learnyscape-backend/auth-service/internal/repository"
 	"github.com/muammarahlnn/learnyscape-backend/pkg/mq"
 )
 
@@ -46,26 +45,13 @@ func (c *UserCreatedConsumer) Handler() mq.KafkaHandler {
 		}
 
 		return c.dataStore.Atomic(ctx, func(ds repository.DataStore) error {
-			userRepo := ds.UserRepository()
-			roleRepo := ds.RoleRepository()
-
-			role, err := roleRepo.FindByName(ctx, event.Role)
-			if err != nil {
-				return err
-			}
-			if role == nil {
-				return errors.New("role not found")
-			}
-
 			// TODO: handle upsert for idempotency
-			_, err = userRepo.Create(ctx, &entity.CreateUserParams{
-				ID:       event.Id,
-				Username: event.Username,
-				Email:    event.Email,
-				FullName: event.FullName,
-				Role:     event.Role,
-			})
-			if err != nil {
+			if err := ds.UserRepository().Create(ctx, &entity.CreateUserParams{
+				ID:           event.Id,
+				Username:     event.Username,
+				Email:        event.Email,
+				HashPassword: event.HashPassword,
+			}); err != nil {
 				return err
 			}
 
