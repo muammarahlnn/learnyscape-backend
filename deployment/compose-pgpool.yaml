@@ -182,6 +182,67 @@ services:
       timeout: 3s
       retries: 10
 
+  pg-verification-1: &pg-verification-common
+    image: "bitnami/postgresql-repmgr:latest"
+    restart: always
+    container_name: pg-verification-1
+    environment: &pg-verification-env
+      POSTGRESQL_POSTGRES_PASSWORD: postgres
+      POSTGRESQL_USERNAME: verification
+      POSTGRESQL_PASSWORD: secret
+      POSTGRESQL_DATABASE: verification_service_db
+      REPMGR_PRIMARY_HOST: pg-verification-1
+      REPMGR_PARTNER_NODES: pg-verification-1,pg-verification-2,pg-verification-3
+      REPMGR_NODE_NAME: pg-verification-1
+      REPMGR_NODE_NETWORK_NAME: pg-verification-1
+      REPMGR_USERNAME: repmgr
+      REPMGR_PASSWORD: repmgr
+    volumes:
+      - pg_verification_1_data:/bitnami/postgresql
+
+  pg-verification-2:
+    <<: *pg-verification-common
+    container_name: pg-verification-2
+    environment:
+      <<: *pg-verification-env
+      REPMGR_PARTNER_NODES: pg-verification-1,pg-verification-2,pg-verification-3
+      REPMGR_NODE_NAME: pg-verification-2
+      REPMGR_NODE_NETWORK_NAME: pg-verification-2
+    volumes:
+      - pg_verification_2_data:/bitnami/postgresql
+
+  pg-verification-3:
+    <<: *pg-verification-common
+    container_name: pg-verification-3
+    environment:
+      <<: *pg-verification-env
+      REPMGR_PARTNER_NODES: pg-verification-1,pg-verification-2,pg-verification-3
+      REPMGR_NODE_NAME: pg-verification-3
+      REPMGR_NODE_NETWORK_NAME: pg-verification-3
+    volumes:
+      - pg_verification_3_data:/bitnami/postgresql
+
+  pgpool-verification:
+    image: "bitnami/pgpool:latest"
+    restart: always
+    container_name: pgpool-verification
+    environment:
+      PGPOOL_BACKEND_NODES: 0:pg-verification-1:5432,1:pg-verification-2:5432,2:pg-verification-3:5432
+      PGPOOL_SR_CHECK_USER: repmgr
+      PGPOOL_SR_CHECK_PASSWORD: repmgr
+      PGPOOL_POSTGRES_USERNAME: postgres
+      PGPOOL_POSTGRES_PASSWORD: postgres
+      PGPOOL_ADMIN_USERNAME: admin
+      PGPOOL_ADMIN_PASSWORD: secret
+      PGPOOL_ENABLE_LOAD_BALANCING: yes
+    ports:
+      - "5003:5432"
+    healthcheck:
+      test: ["CMD", "/opt/bitnami/scripts/pgpool/healthcheck.sh"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
 volumes:
   pg_user_1_data:
   pg_user_2_data:
@@ -192,6 +253,9 @@ volumes:
   pg_admin_1_data:
   pg_admin_2_data:
   pg_admin_3_data:
+  pg_verification_1_data:
+  pg_verification_2_data:
+  pg_verification_3_data:
 
 networks:
   default:
