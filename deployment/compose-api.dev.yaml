@@ -8,6 +8,15 @@ services:
     networks:
       - production
 
+  verification-service:
+    build:
+      context: ./../verification-service
+      dockerfile: Dockerfile.dev
+    container_name: learnyscape-verification-service
+    restart: always
+    networks:
+      - production
+
   auth-service:
     build:
       context: ./../auth-service

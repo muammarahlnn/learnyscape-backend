@@ -1,8 +1,8 @@
 .PHONY: all build compose-up
 
-dirs := ./user-service ./auth-service ./admin-service ./gateway
+dirs := ./user-service ./verification-service ./auth-service ./admin-service ./gateway
 
-migrate_dirs := ./user-service ./auth-service ./admin-service
+migrate_dirs := ./user-service ./verification-service ./auth-service ./admin-service
 
 all: build compose-up
 
@@ -31,6 +31,9 @@ migrate_up:
 		elif [ "$$dir" = "./admin-service" ]; then \
 			DB_PORT=5002; \
 			DB_NAME=admin_service_db; \
+		elif [ "$$dir" = "./verification-service" ]; then \
+			DB_PORT=5003; \
+			DB_NAME=verification_service_db; \
 		fi;\
 		migrate -path $$dir/db/migration/ -database "postgresql://postgres:postgres@$$DB_HOST:$$DB_PORT/$$DB_NAME?sslmode=disable" -verbose up; \
 	done
