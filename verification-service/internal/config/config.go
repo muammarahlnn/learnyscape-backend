@@ -14,6 +14,7 @@ type Config struct {
 	Postgres     *PostgresConfig
 	Logger       *LoggerConfig
 	Kafka        *KafkaConfig
+	Amqp         *AMQPConfig
 	Verification *VerificationConfig
 }
 
@@ -33,6 +34,7 @@ func InitConfig() *Config {
 		Postgres:     initPostgresConfig(),
 		Logger:       initLoggerConfig(),
 		Kafka:        initKafkaConfig(),
+		Amqp:         initAmqpConfig(),
 		Verification: initVerificationConfig(),
 	}
 }

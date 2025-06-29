@@ -19,24 +19,27 @@ import (
 )
 
 type UserCreatedConsumer struct {
-	config    *config.VerificationConfig
-	consumer  sarama.ConsumerGroup
-	dataStore repository.DataStore
-	topic     string
-	wg        *sync.WaitGroup
+	config                    *config.VerificationConfig
+	consumer                  sarama.ConsumerGroup
+	dataStore                 repository.DataStore
+	sendVerificationPublisher mq.AMQPPublisher
+	topic                     string
+	wg                        *sync.WaitGroup
 }
 
 func NewUserCreatedConsumer(
 	config *config.VerificationConfig,
 	consumer sarama.ConsumerGroup,
 	dataStore repository.DataStore,
+	sendVerificationPublisher mq.AMQPPublisher,
 ) mq.KafkaConsumer {
 	return &UserCreatedConsumer{
-		config:    config,
-		consumer:  consumer,
-		dataStore: dataStore,
-		topic:     constant.UserCreatedTopic,
-		wg:        &sync.WaitGroup{},
+		config:                    config,
+		consumer:                  consumer,
+		dataStore:                 dataStore,
+		sendVerificationPublisher: sendVerificationPublisher,
+		topic:                     constant.UserCreatedTopic,
+		wg:                        &sync.WaitGroup{},
 	}
 }
 
@@ -53,10 +56,20 @@ func (c *UserCreatedConsumer) Handler() mq.KafkaHandler {
 		}
 
 		return c.dataStore.Atomic(ctx, func(ds repository.DataStore) error {
+			token := tokenutil.GenerateOTPCode()
+
 			if _, err := ds.AccountVerificationRepository().Save(ctx, &entity.CreateAccountVerificationParams{
 				UserID:   event.Id,
-				Token:    tokenutil.GenerateOTPCode(),
+				Token:    token,
 				ExpireAt: time.Now().Add(c.config.AccountVerificationTokenDuration),
+			}); err != nil {
+				return err
+			}
+
+			if err := c.sendVerificationPublisher.Publish(ctx, &dto.SendVerificationEvent{
+				Email:    event.Email,
+				FullName: event.FullName,
+				Token:    token,
 			}); err != nil {
 				return err
 			}

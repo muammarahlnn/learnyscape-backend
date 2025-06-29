@@ -12,6 +12,8 @@ func BootstrapKafka(
 	kafkaConfig *config.KafkaConfig,
 	verificationConfig *config.VerificationConfig,
 ) []pmq.KafkaConsumer {
+	sendVerificationPublisher := mq.NewSendVerificationPublisher(rabbitmq)
+
 	return []pmq.KafkaConsumer{
 		mq.NewUserCreatedConsumer(
 			verificationConfig,
@@ -21,6 +23,7 @@ func BootstrapKafka(
 				InitialOffset: sarama.OffsetOldest,
 			}),
 			dataStore,
+			sendVerificationPublisher,
 		),
 	}
 }
