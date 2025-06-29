@@ -1,4 +1,14 @@
 services:
+  mailhog:
+    image: "mailhog/mailhog:latest"
+    restart: always
+    container_name: mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - production
+
   user-service:
     build:
       context: ./../user-service
@@ -31,6 +41,15 @@ services:
       context: ./../admin-service
       dockerfile: Dockerfile.dev
     container_name: learnyscape-admin-service
+    restart: always
+    networks:
+      - production
+
+  mail-service:
+    build:
+      context: ./../mail-service
+      dockerfile: Dockerfile
+    container_name: learnyscape-mail-service
     restart: always
     networks:
       - production
