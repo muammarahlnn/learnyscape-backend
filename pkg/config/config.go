@@ -9,7 +9,8 @@ import (
 )
 
 var (
-	JwtConfig *JWTConfig
+	JwtConfig  *JWTConfig
+	SmtpConfig *SMTPConfig
 )
 
 func init() {
@@ -23,6 +24,7 @@ func init() {
 	}
 
 	JwtConfig = initJWTConfig()
+	SmtpConfig = initSMTPConfig()
 }
 
 func parseConfigPath() string {
