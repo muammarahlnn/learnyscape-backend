@@ -42,6 +42,7 @@ compose-up:
 	@docker network create --driver bridge production
 	@docker compose -f deployment/compose-pgpool.yaml \
 		-f deployment/compose-kafka.yaml \
+		-f deployment/compose-rabbitmq.yaml \
 		up -d --build
 	@make migrate_up
 	@docker compose -f deployment/compose-api.yaml up -d --build
@@ -50,6 +51,7 @@ compose-dev-up:
 	@docker network create --driver bridge production
 	@docker compose -f deployment/compose-pgpool.yaml \
 		-f deployment/compose-kafka.yaml \
+		-f deployment/compose-rabbitmq.yaml \
 		up -d --build
 	@echo "Wait for 5 seconds to make sure pgpool is ready to accept connection..."
 	@sleep 5
@@ -59,6 +61,7 @@ compose-dev-up:
 compose-down:
 	@docker compose -f deployment/compose-pgpool.yaml \
 		-f deployment/compose-kafka.yaml \
+		-f deployment/compose-rabbitmq.yaml \
 		down -v
 	@docker compose -f deployment/compose-api.yaml \
 		-f deployment/compose-api.dev.yaml \
@@ -68,6 +71,7 @@ compose-down:
 compose-dev-down:
 	@docker compose -f deployment/compose-pgpool.yaml \
 		-f deployment/compose-kafka.yaml \
+		-f deployment/compose-rabbitmq.yaml \
 		down
 	@docker compose -f deployment/compose-api.yaml \
 		-f deployment/compose-api.dev.yaml \
@@ -75,4 +79,5 @@ compose-dev-down:
 	@docker network rm production
 
 refresh:
+	@docker compose -f deployment/compose-api.dev.yaml down
 	@docker compose -f deployment/compose-api.dev.yaml up -d --build

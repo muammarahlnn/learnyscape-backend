@@ -1,0 +1,58 @@
+services:
+  rabbitmq-1: &rabbitmq-common
+    image: bitnami/rabbitmq:latest
+    container_name: rabbitmq-1
+    hostname: rabbitmq-1
+    restart: always
+    environment: &rabbitmq-env
+      RABBITMQ_USERNAME: guest
+      RABBITMQ_PASSWORD: guest
+      RABBITMQ_MANAGEMENT_ALLOW_WEB_ACCESS: true
+      RABBITMQ_ERLANG_COOKIE: mysecretcookie
+      RABBITMQ_NODE_NAME: rabbit@rabbitmq-1
+      RABBITMQ_CLUSTER_NODE_NAME: rabbit@rabbitmq-1
+    volumes:
+      - rabbitmq_1_data:/bitnami
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    networks:
+      - production
+
+  rabbitmq-2:
+    <<: *rabbitmq-common
+    container_name: rabbitmq-2
+    hostname: rabbitmq-2
+    environment:
+      <<: *rabbitmq-env
+      RABBITMQ_NODE_NAME: rabbit@rabbitmq-2
+      RABBITMQ_CLUSTER_NODE_NAME: rabbit@rabbitmq-1
+    volumes:
+      - rabbitmq_2_data:/bitnami
+    ports: []
+    depends_on:
+      - rabbitmq-1
+
+  rabbitmq-3:
+    <<: *rabbitmq-common
+    container_name: rabbitmq-3
+    hostname: rabbitmq-3
+    environment:
+      <<: *rabbitmq-env
+      RABBITMQ_NODE_NAME: rabbit@rabbitmq-3
+      RABBITMQ_CLUSTER_NODE_NAME: rabbit@rabbitmq-1
+    volumes:
+      - rabbitmq_3_data:/bitnami
+    ports: []
+    depends_on:
+      - rabbitmq-1
+
+volumes:
+  rabbitmq_1_data:
+  rabbitmq_2_data:
+  rabbitmq_3_data:
+
+networks:
+  production:
+    name: production
+    external: true

@@ -4,8 +4,8 @@ services:
     restart: always
     container_name: mailhog
     ports:
-      - "1025:1025"
-      - "8025:8025"
+      - "1035:1025"
+      - "8035:8025"
     networks:
       - production
 
@@ -48,7 +48,7 @@ services:
   mail-service:
     build:
       context: ./../mail-service
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     container_name: learnyscape-mail-service
     restart: always
     networks:
