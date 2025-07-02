@@ -1,0 +1,75 @@
+services:
+  redis-1: &redis-common
+    image: "bitnami/redis-cluster:latest"
+    restart: unless-stopped
+    container_name: redis-1
+    environment: &redis-env
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_NODES: redis-1 redis-2 redis-3 redis-4 redis-5 redis-cluster
+      REDIS_PORT_NUMBER: 6379
+    volumes:
+      - redis_1_data:/bitnami/redis/data
+    networks:
+      - production
+
+  redis-2:
+    <<: *redis-common
+    container_name: redis-2
+    environment:
+      <<: *redis-env
+    volumes:
+      - redis_2_data:/bitnami/redis/data
+
+  redis-3:
+    <<: *redis-common
+    container_name: redis-3
+    environment:
+      <<: *redis-env
+    volumes:
+      - redis_3_data:/bitnami/redis/data
+
+  redis-4:
+    <<: *redis-common
+    container_name: redis-4
+    environment:
+      <<: *redis-env
+    volumes:
+      - redis_4_data:/bitnami/redis/data
+
+  redis-5:
+    <<: *redis-common
+    container_name: redis-5
+    environment:
+      <<: *redis-env
+    volumes:
+      - redis_5_data:/bitnami/redis/data
+
+  redis-cluster:
+    <<: *redis-common
+    container_name: redis-cluster
+    environment:
+      <<: *redis-env
+      REDISCLI_AUTH: ${REDIS_PASSWORD}
+      REDIS_CLUSTER_REPLICAS: 1
+      REDIS_CLUSTER_CREATOR: "yes"
+    volumes:
+      - redis_cluster:/bitnami/redis/data
+    depends_on:
+      - redis-1
+      - redis-2
+      - redis-3
+      - redis-4
+      - redis-5
+
+volumes:
+  redis_1_data:
+  redis_2_data:
+  redis_3_data:
+  redis_4_data:
+  redis_5_data:
+  redis_cluster:
+
+networks:
+  production:
+    name: production
+    external: true

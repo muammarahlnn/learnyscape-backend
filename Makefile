@@ -41,6 +41,7 @@ migrate_up:
 compose-up:
 	@docker network create --driver bridge production
 	@docker compose -f deployment/compose-pgpool.yaml \
+		-f deployments/compose-redis.yaml \
 		-f deployment/compose-kafka.yaml \
 		-f deployment/compose-rabbitmq.yaml \
 		up -d --build
@@ -50,6 +51,7 @@ compose-up:
 compose-dev-up:
 	@docker network create --driver bridge production
 	@docker compose -f deployment/compose-pgpool.yaml \
+		-f deployments/compose-redis.yaml \
 		-f deployment/compose-kafka.yaml \
 		-f deployment/compose-rabbitmq.yaml \
 		up -d --build
@@ -60,6 +62,7 @@ compose-dev-up:
 
 compose-down:
 	@docker compose -f deployment/compose-pgpool.yaml \
+		-f deployments/compose-redis.yaml \
 		-f deployment/compose-kafka.yaml \
 		-f deployment/compose-rabbitmq.yaml \
 		down -v
@@ -70,6 +73,7 @@ compose-down:
 
 compose-dev-down:
 	@docker compose -f deployment/compose-pgpool.yaml \
+		-f deployments/compose-redis.yaml \
 		-f deployment/compose-kafka.yaml \
 		-f deployment/compose-rabbitmq.yaml \
 		down
